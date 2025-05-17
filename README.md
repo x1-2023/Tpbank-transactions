@@ -23,16 +23,25 @@ B4: Copy giá trị trả về và sử dụng trong code
 Config file .env thì khi sử dụng endpoint histories không cần tham số nữa
 
 ### Lấy lịch sử giao dịch
-`POST /histories`
 
-#### Tham số
-- `username` (Tên đăng nhập)
-- `password` (Mật khẩu)
-- `accountId` (Số tài khoản cần lấy lịch sử)
-- `deviceId` (deviceId lấy từ trình duyệt đã đăng nhập)
-- `category` (Tùy chọn, lọc loại giao dịch. "all" để lấy tất cả, "transaction_CategoryMoneyIn" để chỉ lấy giao dịch tiền vào)
+Có thể dùng **POST** hoặc **GET** với endpoint `/histories`:
 
-#### Ví dụ payload
+#### 1. Dùng GET (tiện nhất khi đã cấu hình .env)
+- Lấy tất cả giao dịch:
+  ```bash
+  curl "http://localhost:3000/histories"
+  ```
+- Chỉ lấy giao dịch tiền vào:
+  ```bash
+  curl "http://localhost:3000/histories?category=transaction_CategoryMoneyIn"
+  ```
+- Có thể truyền category bất kỳ để lọc:
+  ```bash
+  curl "http://localhost:3000/histories?category=transaction_CategoryOther"
+  ```
+- **GET sẽ tự lấy thông tin từ .env, không cần truyền body.**
+
+#### 2. Dùng POST (truyền tham số qua body, hoặc để trống nếu đã config .env)
 - **Lấy tất cả giao dịch:**
 ```json
 {
@@ -58,6 +67,14 @@ Config file .env thì khi sử dụng endpoint histories không cần tham số 
   "category": "transaction_CategoryMoneyIn"
 }
 ```
+
+#### Tham số
+- `username` (Tên đăng nhập)
+- `password` (Mật khẩu)
+- `accountId` (Số tài khoản cần lấy lịch sử)
+- `deviceId` (deviceId lấy từ trình duyệt đã đăng nhập)
+- `category` (Tùy chọn, lọc loại giao dịch. "all" để lấy tất cả, "transaction_CategoryMoneyIn" để chỉ lấy giao dịch tiền vào)
+
 ## Yêu cầu cài đặt
 - Cài Node.js bản 20.x trở lên
 
