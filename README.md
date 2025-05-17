@@ -52,6 +52,12 @@ Config file .env thì khi sử dụng endpoint histories không cần tham số 
   "category": "transaction_CategoryMoneyIn"
 }
 ```
+- **Nếu config account trong env thì payload chỉ cần:**
+```json
+{
+  "category": "transaction_CategoryMoneyIn"
+}
+```
 ## Yêu cầu cài đặt
 - Cài Node.js bản 20.x trở lên
 
