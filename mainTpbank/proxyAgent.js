@@ -9,8 +9,9 @@ function getAgent() {
     password: process.env.PROXY_PASSWORD,
   };
 
-  if (!proxy.schema || !proxy.ip || !proxy.port || !proxy.username || !proxy.password) {
-    console.log("Thiếu config proxy");
+  // Nếu thiếu thông tin proxy thì trả về null
+  if (!proxy.schema || !proxy.ip || !proxy.port) {
+    return null;
   }
 
   const proxyUrl = proxy.username && proxy.username.length > 0
