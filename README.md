@@ -30,12 +30,26 @@ Config file .env thì khi sử dụng endpoint histories không cần tham số 
 - `password` (Mật khẩu)
 - `accountId` (Số tài khoản cần lấy lịch sử)
 - `deviceId` (deviceId lấy từ trình duyệt đã đăng nhập)
+- `category` (Tùy chọn, lọc loại giao dịch. "all" để lấy tất cả, "transaction_CategoryMoneyIn" để chỉ lấy giao dịch tiền vào)
+
+#### Ví dụ payload
+- **Lấy tất cả giao dịch:**
 ```json
 {
-    "username": "Tên đăng nhập tpbank",
-    "password": "Mật khẩu đăng nhập",
-    "accountId": "Số tài khoản",
-    "deviceId": "deviceId lấy từ trình duyệt đã đăng nhập"
+  "username": "Tên đăng nhập tpbank",
+  "password": "Mật khẩu đăng nhập",
+  "accountId": "Số tài khoản",
+  "deviceId": "deviceId lấy từ trình duyệt"
+}
+```
+- **Chỉ lấy giao dịch tiền vào:**
+```json
+{
+  "username": "Tên đăng nhập tpbank",
+  "password": "Mật khẩu đăng nhập",
+  "accountId": "Số tài khoản",
+  "deviceId": "deviceId lấy từ trình duyệt",
+  "category": "transaction_CategoryMoneyIn"
 }
 ```
 ## Yêu cầu cài đặt

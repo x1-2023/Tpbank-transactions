@@ -20,6 +20,7 @@ app.post("/histories", async (req, res) => {
     const password = req.body.password || process.env.PASSWORD;
     const deviceId = req.body.deviceId || process.env.DEVICE_ID;
     const accountId = req.body.accountId || process.env.ACCOUNT_ID;
+    const category = req.body.category || "all";
 
     if (!username || !password || !deviceId || !accountId) {
       return res.status(400).json({ error: "Thiếu tham số bắt buộc" });
@@ -58,8 +59,11 @@ app.post("/histories", async (req, res) => {
 
     // Lấy lịch sử giao dịch sử dụng token từ đăng nhập
     const histories = await getHistories(accessToken, accountId, deviceId, username, password);
-
-    return res.json({ info: histories });
+    let transactions = histories.transactionInfos || [];
+    if (category !== "all") {
+      transactions = transactions.filter(tx => tx.category === category);
+    }
+    return res.json({ info: { ...histories, transactionInfos: transactions } });
   } catch (error) {
     return res.status(error.response ? error.response.status : 500).json({ error: error.message });
   }
