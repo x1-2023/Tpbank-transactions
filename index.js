@@ -16,7 +16,7 @@ app.use(cors());
 
 app.post("/histories", async (req, res) => {
   try {
-    const username = req.body.username || process.env.USERNAME;
+    const username = req.body.username || process.env.TPBANK_USERNAME;
     const password = req.body.password || process.env.PASSWORD;
     const deviceId = req.body.deviceId || process.env.DEVICE_ID;
     const accountId = req.body.accountId || process.env.ACCOUNT_ID;
@@ -28,23 +28,31 @@ app.post("/histories", async (req, res) => {
     // Nếu chưa có token hoặc token đã hết hạn thì đăng nhập lại
     if (!accessToken || Date.now() >= accessTokenExpiry) {
       console.log('Token hết hạn hoặc chưa có, đang đăng nhập lại...');
-      const loginResponse = await handleLogin(username, password, deviceId);
-      accessToken = loginResponse.access_token;
-      accessTokenExpiry = Date.now() + (loginResponse.expires_in - 10) * 1000;
-      // Đặt thời gian chờ để làm mới token
-      if (refreshTokenTimeout) {
-        clearTimeout(refreshTokenTimeout);
-      }
-      refreshTokenTimeout = setTimeout(async () => {
-        try {
-          console.log('Token hết hạn, đang đăng nhập lại...');
-          const newLoginResponse = await handleLogin(username, password, deviceId);
-          accessToken = newLoginResponse.access_token;
-          accessTokenExpiry = Date.now() + (newLoginResponse.expires_in - 10) * 1000;
-        } catch (error) {
-          console.error('Lỗi khi làm mới token:', error.message);
+      try {
+        const loginResponse = await handleLogin(username, password, deviceId);
+        console.log('Kết quả login:', loginResponse); // Log response trả về
+        accessToken = loginResponse.access_token;
+        accessTokenExpiry = Date.now() + (loginResponse.expires_in - 10) * 1000;
+        // Đặt thời gian chờ để làm mới token
+        if (refreshTokenTimeout) {
+          clearTimeout(refreshTokenTimeout);
         }
-      }, (loginResponse.expires_in - 10) * 1000);
+        refreshTokenTimeout = setTimeout(async () => {
+          try {
+            console.log('Token hết hạn, đang đăng nhập lại...');
+            const newLoginResponse = await handleLogin(username, password, deviceId);
+            accessToken = newLoginResponse.access_token;
+            accessTokenExpiry = Date.now() + (newLoginResponse.expires_in - 10) * 1000;
+          } catch (error) {
+            console.error('Lỗi khi làm mới token:', error.message);
+          }
+        }, (loginResponse.expires_in - 10) * 1000);
+      } catch (error) {
+        // Thêm log lỗi chi tiết và log cả payload đầu vào
+        console.error('Lỗi đăng nhập:', error.response ? error.response.data : error.message);
+        console.error('Payload đăng nhập:', { username, password, deviceId });
+        return res.status(401).json({ error: error.response ? error.response.data : error.message });
+      }
     }
     console.log(accessToken);
 
